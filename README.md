@@ -36,6 +36,15 @@ All paths are relative, so the site also runs from GitHub Pages at
 
 Every push to `main` redeploys automatically.
 
+## Website checker
+
+The "Check my website free" box in the hero reports what's wrong with a visitor's site.
+
+- **On Cloudflare Pages:** `functions/api/analyze.js` fetches the visitor's homepage and checks its HTML (title, description, headings, mobile setup, HTTPS, alt text, tap-to-call, forms, structured data, page weight), then adds Google PageSpeed scores. Optional: add a free Google PageSpeed Insights API key as a secret named `PSI_KEY` for higher daily limits.
+- **On GitHub Pages (no functions):** the page calls Google PageSpeed Insights directly from the browser instead.
+
+`functions/api/geo.js` returns the visitor's country from Cloudflare, which picks the trades list and pricing currency. Without it, the page guesses from the browser's time zone.
+
 ## Make the form deliver leads
 
 The form posts to `/api/concept`. Set up at least one of these, or visitors will see an "email us instead" link:

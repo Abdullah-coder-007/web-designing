@@ -112,20 +112,21 @@
   </header>
 
   <main id="main">
-    <!-- Card 1: hero -->
+    <!-- Card 1: hero with website checker and request form -->
     <section class="card card-hero" id="top">
       <div class="hero-glow" aria-hidden="true"><span></span><span></span><span></span></div>
       <div class="hero-grid">
         <div class="hero-copy">
           <p class="hero-kicker"><span class="pulse" aria-hidden="true"></span>Free redesign concept in 24 hours</p>
           <h1>Your old website, rewoven.</h1>
-          <p class="lede">We turn dated small-business websites into fast, good-looking sites that Google can rank and customers can use. See your redesign before you spend a cent.</p>
+          <p class="lede">Your website should win customers, not lose them. We redesign it in 48 hours, and you pay only when you love it.</p>
 
-          <form class="starter" id="starter" action="#concept">
-            <label class="visually-hidden" for="starter-url">Your current website address</label>
-            <input id="starter-url" name="website" type="text" inputmode="url" autocomplete="url" placeholder="yourbusiness.com">
-            <button class="btn" type="submit">Show me my redesign</button>
+          <form class="starter" id="checker" action="#report" novalidate>
+            <label class="visually-hidden" for="checker-url">Your website address</label>
+            <input id="checker-url" name="url" type="text" inputmode="url" autocomplete="url" placeholder="yourbusiness.com" required>
+            <button class="btn" type="submit">Check my website free</button>
           </form>
+          <p class="starter-note">See what's costing you customers and Google rankings, in about 30 seconds.</p>
 
           <ul class="assurances">
             <li><b>No upfront payment.</b> Pay after you approve it.</li>
@@ -133,33 +134,88 @@
             <li><b>Rankings protected.</b> Old pages redirected properly.</li>
           </ul>
         </div>
-        <div class="hero-visual">
-          <div class="wall" aria-hidden="true"><div class="wall-tilt">
-<div class="wall-col c1"><div class="wall-run"><div class="wcard" style="--d:-0.0s"><div class="w-old v1"><p class="o-banner">Welcome to Our Plumbing Website!!</p><div class="o-body"><p class="o-side"><u></u><u></u><u></u><u></u></p><p class="o-main"><b>Plumbing Services</b><i style="width:92%"></i><i style="width:80%"></i><i style="width:88%"></i><i style="width:60%"></i><span class="o-img"></span></p></div></div><div class="w-new" style="--bg:#FFF8EE;--ink:#14213D;--a1:#F25C2A;--a2:#2EC4B6"><p class="n-nav"><b>Northside</b><i></i><i></i><span>Book</span></p><p class="n-h">Burst pipe? We&#x27;re there in 60 min.</p><span class="n-cta">Book a plumber</span><span class="n-shape s1"></span><span class="n-shape s2"></span><span class="n-chip">Plumbing</span></div><span class="w-tag"><b>Before</b><b>After</b></span></div><div class="wcard" style="--d:-1.9s"><div class="w-old v2"><p class="o-h">Bakery Home Page</p><span class="o-rainbow"></span><p class="o-center"><i style="width:92%"></i><i style="width:80%"></i><i style="width:88%"></i><i style="width:60%"></i></p><span class="o-under">Under construction</span></div><div class="w-new" style="--bg:#FFF1E6;--ink:#4A2511;--a1:#E07A5F;--a2:#F2CC8F"><p class="n-nav"><b>Crumb &amp; Co</b><i></i><i></i><span>Order</span></p><p class="n-h">Fresh bread before 7 am.</p><span class="n-cta">Order for pickup</span><span class="n-shape s1"></span><span class="n-shape s2"></span><span class="n-chip">Bakery</span></div><span class="w-tag"><b>Before</b><b>After</b></span></div><div class="wcard" style="--d:-3.8s"><div class="w-old v4"><p class="o-h">Family Dentistry - Est. 1994</p><div class="o-body"><span class="o-img"></span><p class="o-main"><i style="width:92%"></i><i style="width:80%"></i><i style="width:88%"></i><i style="width:60%"></i></p></div><p class="o-foot">Copyright 2008 | Home | Contact</p></div><div class="w-new" style="--bg:#EEF6FF;--ink:#0B2545;--a1:#3A86FF;--a2:#8EE3C8"><p class="n-nav"><b>Brightbite</b><i></i><i></i><span>Book</span></p><p class="n-h">Gentle dentistry, booked online.</p><span class="n-cta">Book a check-up</span><span class="n-shape s1"></span><span class="n-shape s2"></span><span class="n-chip">Dental clinic</span></div><span class="w-tag"><b>Before</b><b>After</b></span></div><div class="wcard" style="--d:-5.7s"><div class="w-old v3"><p class="o-marq">~*~ Salon &amp; Spa ~*~</p><p class="o-center"><i style="width:92%"></i><i style="width:80%"></i><i style="width:88%"></i><i style="width:60%"></i></p><span class="o-img"></span><span class="o-count">00010391</span></div><div class="w-new" style="--bg:#FCE8EE;--ink:#3D1027;--a1:#C2185B;--a2:#F8B4C8"><p class="n-nav"><b>Velvet</b><i></i><i></i><span>Book</span></p><p class="n-h">Your best hair day, booked in a tap.</p><span class="n-cta">Book a stylist</span><span class="n-shape s1"></span><span class="n-shape s2"></span><span class="n-chip">Hair salon</span></div><span class="w-tag"><b>Before</b><b>After</b></span></div><div class="wcard" style="--d:-0.0s"><div class="w-old v1"><p class="o-banner">Welcome to Our Plumbing Website!!</p><div class="o-body"><p class="o-side"><u></u><u></u><u></u><u></u></p><p class="o-main"><b>Plumbing Services</b><i style="width:92%"></i><i style="width:80%"></i><i style="width:88%"></i><i style="width:60%"></i><span class="o-img"></span></p></div></div><div class="w-new" style="--bg:#FFF8EE;--ink:#14213D;--a1:#F25C2A;--a2:#2EC4B6"><p class="n-nav"><b>Northside</b><i></i><i></i><span>Book</span></p><p class="n-h">Burst pipe? We&#x27;re there in 60 min.</p><span class="n-cta">Book a plumber</span><span class="n-shape s1"></span><span class="n-shape s2"></span><span class="n-chip">Plumbing</span></div><span class="w-tag"><b>Before</b><b>After</b></span></div><div class="wcard" style="--d:-1.9s"><div class="w-old v2"><p class="o-h">Bakery Home Page</p><span class="o-rainbow"></span><p class="o-center"><i style="width:92%"></i><i style="width:80%"></i><i style="width:88%"></i><i style="width:60%"></i></p><span class="o-under">Under construction</span></div><div class="w-new" style="--bg:#FFF1E6;--ink:#4A2511;--a1:#E07A5F;--a2:#F2CC8F"><p class="n-nav"><b>Crumb &amp; Co</b><i></i><i></i><span>Order</span></p><p class="n-h">Fresh bread before 7 am.</p><span class="n-cta">Order for pickup</span><span class="n-shape s1"></span><span class="n-shape s2"></span><span class="n-chip">Bakery</span></div><span class="w-tag"><b>Before</b><b>After</b></span></div><div class="wcard" style="--d:-3.8s"><div class="w-old v4"><p class="o-h">Family Dentistry - Est. 1994</p><div class="o-body"><span class="o-img"></span><p class="o-main"><i style="width:92%"></i><i style="width:80%"></i><i style="width:88%"></i><i style="width:60%"></i></p></div><p class="o-foot">Copyright 2008 | Home | Contact</p></div><div class="w-new" style="--bg:#EEF6FF;--ink:#0B2545;--a1:#3A86FF;--a2:#8EE3C8"><p class="n-nav"><b>Brightbite</b><i></i><i></i><span>Book</span></p><p class="n-h">Gentle dentistry, booked online.</p><span class="n-cta">Book a check-up</span><span class="n-shape s1"></span><span class="n-shape s2"></span><span class="n-chip">Dental clinic</span></div><span class="w-tag"><b>Before</b><b>After</b></span></div><div class="wcard" style="--d:-5.7s"><div class="w-old v3"><p class="o-marq">~*~ Salon &amp; Spa ~*~</p><p class="o-center"><i style="width:92%"></i><i style="width:80%"></i><i style="width:88%"></i><i style="width:60%"></i></p><span class="o-img"></span><span class="o-count">00010391</span></div><div class="w-new" style="--bg:#FCE8EE;--ink:#3D1027;--a1:#C2185B;--a2:#F8B4C8"><p class="n-nav"><b>Velvet</b><i></i><i></i><span>Book</span></p><p class="n-h">Your best hair day, booked in a tap.</p><span class="n-cta">Book a stylist</span><span class="n-shape s1"></span><span class="n-shape s2"></span><span class="n-chip">Hair salon</span></div><span class="w-tag"><b>Before</b><b>After</b></span></div></div></div>
-<div class="wall-col c2"><div class="wall-run"><div class="wcard" style="--d:-7.6s"><div class="w-old v1"><p class="o-banner">AUTO REPAIR - CALL US</p><div class="o-body"><p class="o-side"><u></u><u></u><u></u><u></u></p><p class="o-main"><b>Auto repair Services</b><i style="width:92%"></i><i style="width:80%"></i><i style="width:88%"></i><i style="width:60%"></i><span class="o-img"></span></p></div></div><div class="w-new" style="--bg:#F4F4F0;--ink:#1C1C1C;--a1:#FFB703;--a2:#219EBC"><p class="n-nav"><b>Gearhouse</b><i></i><i></i><span>Get</span></p><p class="n-h">Honest repairs. Same-day quotes.</p><span class="n-cta">Get a quote</span><span class="n-shape s1"></span><span class="n-shape s2"></span><span class="n-chip">Auto repair</span></div><span class="w-tag"><b>Before</b><b>After</b></span></div><div class="wcard" style="--d:-9.5s"><div class="w-old v2"><p class="o-h">Welcome to the Cafe</p><span class="o-rainbow"></span><p class="o-center"><i style="width:92%"></i><i style="width:80%"></i><i style="width:88%"></i><i style="width:60%"></i></p><span class="o-under">Under construction</span></div><div class="w-new" style="--bg:#E9F2EC;--ink:#163A2B;--a1:#2D6A4F;--a2:#F4A261"><p class="n-nav"><b>Fernleaf</b><i></i><i></i><span>See</span></p><p class="n-h">Coffee worth the detour.</p><span class="n-cta">See the menu</span><span class="n-shape s1"></span><span class="n-shape s2"></span><span class="n-chip">Café</span></div><span class="w-tag"><b>Before</b><b>After</b></span></div><div class="wcard" style="--d:-11.4s"><div class="w-old v4"><p class="o-h">Law Offices - Home</p><div class="o-body"><span class="o-img"></span><p class="o-main"><i style="width:92%"></i><i style="width:80%"></i><i style="width:88%"></i><i style="width:60%"></i></p></div><p class="o-foot">Copyright 2008 | Home | Contact</p></div><div class="w-new" style="--bg:#F3F1EC;--ink:#1B2A41;--a1:#B08D57;--a2:#324A5F"><p class="n-nav"><b>Harlow Law</b><i></i><i></i><span>Free</span></p><p class="n-h">Straight answers on your case.</p><span class="n-cta">Free consultation</span><span class="n-shape s1"></span><span class="n-shape s2"></span><span class="n-chip">Law office</span></div><span class="w-tag"><b>Before</b><b>After</b></span></div><div class="wcard" style="--d:-13.3s"><div class="w-old v1"><p class="o-banner">Lawn Care &amp; Landscaping</p><div class="o-body"><p class="o-side"><u></u><u></u><u></u><u></u></p><p class="o-main"><b>Landscaping Services</b><i style="width:92%"></i><i style="width:80%"></i><i style="width:88%"></i><i style="width:60%"></i><span class="o-img"></span></p></div></div><div class="w-new" style="--bg:#E8F5E9;--ink:#12372A;--a1:#2E8B57;--a2:#FFB020"><p class="n-nav"><b>Greenfold</b><i></i><i></i><span>Get</span></p><p class="n-h">Yards you&#x27;ll actually use.</p><span class="n-cta">Get an estimate</span><span class="n-shape s1"></span><span class="n-shape s2"></span><span class="n-chip">Landscaping</span></div><span class="w-tag"><b>Before</b><b>After</b></span></div><div class="wcard" style="--d:-7.6s"><div class="w-old v1"><p class="o-banner">AUTO REPAIR - CALL US</p><div class="o-body"><p class="o-side"><u></u><u></u><u></u><u></u></p><p class="o-main"><b>Auto repair Services</b><i style="width:92%"></i><i style="width:80%"></i><i style="width:88%"></i><i style="width:60%"></i><span class="o-img"></span></p></div></div><div class="w-new" style="--bg:#F4F4F0;--ink:#1C1C1C;--a1:#FFB703;--a2:#219EBC"><p class="n-nav"><b>Gearhouse</b><i></i><i></i><span>Get</span></p><p class="n-h">Honest repairs. Same-day quotes.</p><span class="n-cta">Get a quote</span><span class="n-shape s1"></span><span class="n-shape s2"></span><span class="n-chip">Auto repair</span></div><span class="w-tag"><b>Before</b><b>After</b></span></div><div class="wcard" style="--d:-9.5s"><div class="w-old v2"><p class="o-h">Welcome to the Cafe</p><span class="o-rainbow"></span><p class="o-center"><i style="width:92%"></i><i style="width:80%"></i><i style="width:88%"></i><i style="width:60%"></i></p><span class="o-under">Under construction</span></div><div class="w-new" style="--bg:#E9F2EC;--ink:#163A2B;--a1:#2D6A4F;--a2:#F4A261"><p class="n-nav"><b>Fernleaf</b><i></i><i></i><span>See</span></p><p class="n-h">Coffee worth the detour.</p><span class="n-cta">See the menu</span><span class="n-shape s1"></span><span class="n-shape s2"></span><span class="n-chip">Café</span></div><span class="w-tag"><b>Before</b><b>After</b></span></div><div class="wcard" style="--d:-11.4s"><div class="w-old v4"><p class="o-h">Law Offices - Home</p><div class="o-body"><span class="o-img"></span><p class="o-main"><i style="width:92%"></i><i style="width:80%"></i><i style="width:88%"></i><i style="width:60%"></i></p></div><p class="o-foot">Copyright 2008 | Home | Contact</p></div><div class="w-new" style="--bg:#F3F1EC;--ink:#1B2A41;--a1:#B08D57;--a2:#324A5F"><p class="n-nav"><b>Harlow Law</b><i></i><i></i><span>Free</span></p><p class="n-h">Straight answers on your case.</p><span class="n-cta">Free consultation</span><span class="n-shape s1"></span><span class="n-shape s2"></span><span class="n-chip">Law office</span></div><span class="w-tag"><b>Before</b><b>After</b></span></div><div class="wcard" style="--d:-13.3s"><div class="w-old v1"><p class="o-banner">Lawn Care &amp; Landscaping</p><div class="o-body"><p class="o-side"><u></u><u></u><u></u><u></u></p><p class="o-main"><b>Landscaping Services</b><i style="width:92%"></i><i style="width:80%"></i><i style="width:88%"></i><i style="width:60%"></i><span class="o-img"></span></p></div></div><div class="w-new" style="--bg:#E8F5E9;--ink:#12372A;--a1:#2E8B57;--a2:#FFB020"><p class="n-nav"><b>Greenfold</b><i></i><i></i><span>Get</span></p><p class="n-h">Yards you&#x27;ll actually use.</p><span class="n-cta">Get an estimate</span><span class="n-shape s1"></span><span class="n-shape s2"></span><span class="n-chip">Landscaping</span></div><span class="w-tag"><b>Before</b><b>After</b></span></div></div></div>
-<div class="wall-col c3"><div class="wall-run"><div class="wcard" style="--d:-15.2s"><div class="w-old v3"><p class="o-marq">GYM ** JOIN NOW **</p><p class="o-center"><i style="width:92%"></i><i style="width:80%"></i><i style="width:88%"></i><i style="width:60%"></i></p><span class="o-img"></span><span class="o-count">00014391</span></div><div class="w-new" style="--bg:#FFF0EB;--ink:#2B0F0A;--a1:#F0544F;--a2:#5B3DF5"><p class="n-nav"><b>Pulse</b><i></i><i></i><span>Book</span></p><p class="n-h">Your first class is on us.</p><span class="n-cta">Book a free class</span><span class="n-shape s1"></span><span class="n-shape s2"></span><span class="n-chip">Fitness studio</span></div><span class="w-tag"><b>Before</b><b>After</b></span></div><div class="wcard" style="--d:-17.1s"><div class="w-old v2"><p class="o-h">Flowers For All Occasions</p><span class="o-rainbow"></span><p class="o-center"><i style="width:92%"></i><i style="width:80%"></i><i style="width:88%"></i><i style="width:60%"></i></p><span class="o-under">Under construction</span></div><div class="w-new" style="--bg:#FFF0F5;--ink:#3A1B2A;--a1:#E5384F;--a2:#6BBF59"><p class="n-nav"><b>Petalry</b><i></i><i></i><span>Send</span></p><p class="n-h">Same-day flowers across town.</p><span class="n-cta">Send flowers</span><span class="n-shape s1"></span><span class="n-shape s2"></span><span class="n-chip">Florist</span></div><span class="w-tag"><b>Before</b><b>After</b></span></div><div class="wcard" style="--d:-19.0s"><div class="w-old v4"><p class="o-h">Tax &amp; Bookkeeping Services</p><div class="o-body"><span class="o-img"></span><p class="o-main"><i style="width:92%"></i><i style="width:80%"></i><i style="width:88%"></i><i style="width:60%"></i></p></div><p class="o-foot">Copyright 2008 | Home | Contact</p></div><div class="w-new" style="--bg:#EFF3FA;--ink:#14213D;--a1:#3D5A80;--a2:#EE6C4D"><p class="n-nav"><b>Ledgerly</b><i></i><i></i><span>Book</span></p><p class="n-h">Taxes done. Stress gone.</p><span class="n-cta">Book a call</span><span class="n-shape s1"></span><span class="n-shape s2"></span><span class="n-chip">Accountant</span></div><span class="w-tag"><b>Before</b><b>After</b></span></div><div class="wcard" style="--d:-20.9s"><div class="w-old v3"><p class="o-marq">Dog Grooming Home Page</p><p class="o-center"><i style="width:92%"></i><i style="width:80%"></i><i style="width:88%"></i><i style="width:60%"></i></p><span class="o-img"></span><span class="o-count">00012391</span></div><div class="w-new" style="--bg:#E6FAF7;--ink:#0B3D3A;--a1:#0E9F95;--a2:#FFB020"><p class="n-nav"><b>Wagwash</b><i></i><i></i><span>Book</span></p><p class="n-h">Happy dogs, clean coats.</p><span class="n-cta">Book a groom</span><span class="n-shape s1"></span><span class="n-shape s2"></span><span class="n-chip">Pet grooming</span></div><span class="w-tag"><b>Before</b><b>After</b></span></div><div class="wcard" style="--d:-15.2s"><div class="w-old v3"><p class="o-marq">GYM ** JOIN NOW **</p><p class="o-center"><i style="width:92%"></i><i style="width:80%"></i><i style="width:88%"></i><i style="width:60%"></i></p><span class="o-img"></span><span class="o-count">00014391</span></div><div class="w-new" style="--bg:#FFF0EB;--ink:#2B0F0A;--a1:#F0544F;--a2:#5B3DF5"><p class="n-nav"><b>Pulse</b><i></i><i></i><span>Book</span></p><p class="n-h">Your first class is on us.</p><span class="n-cta">Book a free class</span><span class="n-shape s1"></span><span class="n-shape s2"></span><span class="n-chip">Fitness studio</span></div><span class="w-tag"><b>Before</b><b>After</b></span></div><div class="wcard" style="--d:-17.1s"><div class="w-old v2"><p class="o-h">Flowers For All Occasions</p><span class="o-rainbow"></span><p class="o-center"><i style="width:92%"></i><i style="width:80%"></i><i style="width:88%"></i><i style="width:60%"></i></p><span class="o-under">Under construction</span></div><div class="w-new" style="--bg:#FFF0F5;--ink:#3A1B2A;--a1:#E5384F;--a2:#6BBF59"><p class="n-nav"><b>Petalry</b><i></i><i></i><span>Send</span></p><p class="n-h">Same-day flowers across town.</p><span class="n-cta">Send flowers</span><span class="n-shape s1"></span><span class="n-shape s2"></span><span class="n-chip">Florist</span></div><span class="w-tag"><b>Before</b><b>After</b></span></div><div class="wcard" style="--d:-19.0s"><div class="w-old v4"><p class="o-h">Tax &amp; Bookkeeping Services</p><div class="o-body"><span class="o-img"></span><p class="o-main"><i style="width:92%"></i><i style="width:80%"></i><i style="width:88%"></i><i style="width:60%"></i></p></div><p class="o-foot">Copyright 2008 | Home | Contact</p></div><div class="w-new" style="--bg:#EFF3FA;--ink:#14213D;--a1:#3D5A80;--a2:#EE6C4D"><p class="n-nav"><b>Ledgerly</b><i></i><i></i><span>Book</span></p><p class="n-h">Taxes done. Stress gone.</p><span class="n-cta">Book a call</span><span class="n-shape s1"></span><span class="n-shape s2"></span><span class="n-chip">Accountant</span></div><span class="w-tag"><b>Before</b><b>After</b></span></div><div class="wcard" style="--d:-20.9s"><div class="w-old v3"><p class="o-marq">Dog Grooming Home Page</p><p class="o-center"><i style="width:92%"></i><i style="width:80%"></i><i style="width:88%"></i><i style="width:60%"></i></p><span class="o-img"></span><span class="o-count">00012391</span></div><div class="w-new" style="--bg:#E6FAF7;--ink:#0B3D3A;--a1:#0E9F95;--a2:#FFB020"><p class="n-nav"><b>Wagwash</b><i></i><i></i><span>Book</span></p><p class="n-h">Happy dogs, clean coats.</p><span class="n-cta">Book a groom</span><span class="n-shape s1"></span><span class="n-shape s2"></span><span class="n-chip">Pet grooming</span></div><span class="w-tag"><b>Before</b><b>After</b></span></div></div></div>
-</div></div>
-          <p class="wall-caption">Typical redesigns we do, by trade. Illustrative examples.</p>
+
+        <div class="hero-form" id="concept">
+          <form class="concept-form" id="concept-form" action="api/concept" method="post" novalidate>
+            <h2 class="form-title">Get your free redesign concept</h2>
+            <p class="form-sub">We'll send a preview of your new homepage and a fixed price within 24 hours.</p>
+            <div class="field">
+              <label for="f-site">Your current website</label>
+              <input id="f-site" name="website" type="text" inputmode="url" placeholder="yourbusiness.com">
+            </div>
+            <div class="field-row">
+              <div class="field">
+                <label for="f-name">Your name</label>
+                <input id="f-name" name="name" type="text" autocomplete="name" required>
+              </div>
+              <div class="field">
+                <label for="f-business">Business name</label>
+                <input id="f-business" name="business" type="text" autocomplete="organization" required>
+              </div>
+            </div>
+            <div class="field">
+              <label for="f-email">Email</label>
+              <input id="f-email" name="email" type="email" autocomplete="email" required>
+            </div>
+            <div class="field-row">
+              <div class="field">
+                <label for="f-country">Country</label>
+                <select id="f-country" name="country" required>
+                  <option value="Canada">Canada</option>
+                  <option value="United States">United States</option>
+                  <option value="United Kingdom">United Kingdom</option>
+                  <option value="United Arab Emirates">United Arab Emirates</option>
+                  <option value="Other">Somewhere else</option>
+                </select>
+              </div>
+              <div class="field">
+                <label for="f-plan">Package</label>
+                <select id="f-plan" name="plan">
+                  <option value="Redesign">Redesign</option>
+                  <option value="Redesign Plus">Redesign Plus</option>
+                  <option value="Store redesign">Store redesign</option>
+                  <option value="Not sure yet">Not sure yet</option>
+                </select>
+              </div>
+            </div>
+            <input type="hidden" id="f-notes" name="notes" value="">
+            <div class="hp" aria-hidden="true">
+              <label for="f-company">Leave this empty</label>
+              <input id="f-company" name="company" type="text" tabindex="-1" autocomplete="off">
+            </div>
+            <button class="btn btn-block" type="submit">Request my free concept</button>
+            <p class="form-status" id="form-status" role="status" aria-live="polite"></p>
+            <p class="form-legal">No cost, no obligation. See our <a href="privacy.html">privacy policy</a>.</p>
+          </form>
         </div>
+      </div>
+
+      <div class="report" id="report" hidden>
+        <div class="report-head">
+          <div>
+            <p class="report-label">Website check</p>
+            <h2 class="report-title" id="report-title">Checking your website…</h2>
+            <p class="report-sub" id="report-sub"></p>
+          </div>
+          <button class="btn btn-ghost btn-small" type="button" id="report-close">Close report</button>
+        </div>
+        <div class="report-progress" id="report-progress">
+          <span class="bar"><i></i></span>
+          <ol class="report-steps">
+            <li>Loading your homepage</li>
+            <li>Testing speed on a phone</li>
+            <li>Checking Google search basics</li>
+            <li>Looking at how customers contact you</li>
+          </ol>
+        </div>
+        <div class="report-body" id="report-body"></div>
       </div>
     </section>
 
-    <!-- Strip: every small business, by country -->
+    <!-- Strip: every small business, auto country -->
     <section class="card card-trades" id="trades" aria-labelledby="trades-title">
-      <div class="trades-head">
-        <h2 id="trades-title">Built for every small business in <span id="market-name">Canada</span></h2>
-        <div class="market" role="group" aria-label="Choose your country">
-          <button type="button" data-market="CA" aria-pressed="true">Canada</button>
-          <button type="button" data-market="US" aria-pressed="false">United States</button>
-          <button type="button" data-market="UK" aria-pressed="false">United Kingdom</button>
-          <button type="button" data-market="AE" aria-pressed="false">UAE</button>
-        </div>
-      </div>
-      <div class="trades-rows" aria-hidden="true">
-        <div class="trades-row"><div class="trades-track" id="trades-a"></div></div>
-        <div class="trades-row reverse"><div class="trades-track" id="trades-b"></div></div>
-      </div>
-      <p class="trades-list" id="trades-list">Plumbers, electricians, HVAC and furnace pros, roofers, snow removal crews, landscapers, general contractors, painters, movers, cleaners, auto repair shops, dentists, physiotherapists, chiropractors, massage therapists, optometrists, hair salons, barbers, nail and lash studios, spas, cafés, restaurants, bakeries, food trucks, breweries, florists, pet groomers, daycares, tutors, driving schools, fitness studios, yoga studios, accountants, bookkeepers, lawyers, notaries, real estate agents, mortgage brokers, insurance brokers, photographers, wedding planners, boutiques, gift shops, farm stands and cottage rentals.</p>
+      <h2 id="trades-title" class="trades-title">Built for every small business in <span id="market-name">Canada</span></h2>
+      <div class="trades-row" aria-hidden="true"><div class="trades-track" id="trades-a"></div></div>
     </section>
 
     <!-- Card 2: pain points -->
@@ -168,63 +224,19 @@
       <div class="toasts" aria-hidden="true">
         <span class="toast t1"><i class="t-warn"></i>Not secure</span>
         <span class="toast t2"><i class="t-slow"></i>8.4 s to load</span>
-        <span class="toast t3"><i class="t-warn"></i>Text too small to read</span>
-        <span class="toast t4"><i class="t-slow"></i>Visitor left</span>
+        <span class="toast t3"><i class="t-warn"></i>Visitor left</span>
       </div>
       <div class="pain-inner">
         <h2>What an outdated website is quietly costing you</h2>
-        <p class="section-lede">Every one of these turns visitors away, and several of them also count against you on Google.</p>
-        <div class="pain-grid">
-          <article class="pain">
-            <h3>It loads slowly on phones</h3>
-            <p class="pain-stat"><b>53%</b> of mobile visitors leave a page that takes more than 3 seconds to load.</p>
-            <dl>
-              <dt>On Google</dt><dd>Loading speed is part of Google's page experience signals, through Core Web Vitals.</dd>
-            </dl>
-            <p class="pain-src">Sources: <a href="https://www.marketingdive.com/news/google-53-of-mobile-users-abandon-sites-that-take-over-3-seconds-to-load/426070/" rel="noopener" target="_blank">Google, The Need for Mobile Speed, 2016</a>, <a href="https://goo.gle/page-exp" rel="noopener" target="_blank">Google Search Central</a></p>
-          </article>
-          <article class="pain">
-            <h3>It breaks on mobile</h3>
-            <p class="pain-stat">Google now looks at the <b>mobile version</b> of your site first when it decides where you rank.</p>
-            <dl>
-              <dt>On Google</dt><dd>If your phone layout is cramped or missing content, that is the version Google judges.</dd>
-            </dl>
-            <p class="pain-src">Source: <a href="https://developers.google.com/search/blog/2023/10/mobile-first-is-here?hl=en" rel="noopener" target="_blank">Google Search Central, mobile-first indexing, 2023</a></p>
-          </article>
-          <article class="pain">
-            <h3>Browsers call it "Not secure"</h3>
-            <p class="pain-stat">Since <b>2018</b>, Chrome has labelled every page without HTTPS as "Not secure" next to your address.</p>
-            <dl>
-              <dt>On Google</dt><dd>HTTPS is one of the page experience signals Google uses alongside mobile-friendliness.</dd>
-            </dl>
-            <p class="pain-src">Sources: <a href="https://searchengineland.com/tomorrow-chrome-starts-telling-users-http-sites-are-not-secure-302481/" rel="noopener" target="_blank">Search Engine Land</a>, <a href="https://goo.gle/page-exp" rel="noopener" target="_blank">Google Search Central</a></p>
-          </article>
-          <article class="pain">
-            <h3>It looks out of date</h3>
-            <p class="pain-stat">In a Stanford study, <b>46.1%</b> of comments about whether a site was credible were about its visual design.</p>
-            <dl>
-              <dt>For your customers</dt><dd>A tired design makes a good business look closed, cheap or careless before anyone reads a word.</dd>
-            </dl>
-            <p class="pain-src">Source: <a href="https://www.leanlabs.com/faq/b2b-websites/how-do-buyers-judge-a-companys-legitimacy-based-on-website-design" rel="noopener" target="_blank">Stanford web credibility research, via Lean Labs</a></p>
-          </article>
-          <article class="pain">
-            <h3>Your reviews are hidden</h3>
-            <p class="pain-stat"><b>85%</b> of consumers are more likely to use a business after reading positive reviews.</p>
-            <dl>
-              <dt>For your customers</dt><dd>Old sites rarely show reviews at all, so the best proof you have never reaches the people deciding.</dd>
-            </dl>
-            <p class="pain-src">Source: <a href="https://www.pinmeto.com/news/brightlocal-local-consumer-review-survey-2026/" rel="noopener" target="_blank">BrightLocal Local Consumer Review Survey 2026</a></p>
-          </article>
-          <article class="pain">
-            <h3>Google can't tell what you do</h3>
-            <p class="pain-stat">Google says great, relevant content still matters more than any design signal.</p>
-            <dl>
-              <dt>On Google</dt><dd>One thin page with no services, areas or hours gives Google nothing to match to local searches like "plumber near me".</dd>
-            </dl>
-            <p class="pain-src">Source: <a href="https://goo.gle/page-exp" rel="noopener" target="_blank">Google Search Central</a></p>
-          </article>
-        </div>
-        <a class="btn btn-onlight" href="#concept">Check what's holding my site back</a>
+        <ul class="pain-list">
+          <li><b>Slow on phones.</b> 53% of mobile visitors leave if a page takes over 3 seconds, and speed is part of how Google ranks pages.</li>
+          <li><b>Broken on mobile.</b> Google ranks the mobile version of your site first, so a cramped phone layout drags you down.</li>
+          <li><b>"Not secure" warning.</b> Chrome flags every site without HTTPS, and HTTPS is a Google ranking signal.</li>
+          <li><b>Looks out of date.</b> Nearly half of how people judge a site's credibility comes down to its design.</li>
+          <li><b>Reviews hidden.</b> 85% of people are more likely to choose a business after reading good reviews.</li>
+          <li><b>Thin content.</b> One page with no services, areas or hours gives Google nothing to match to local searches.</li>
+        </ul>
+        <a class="btn btn-onlight" href="#top" data-focus="checker-url">Check what's holding my site back</a>
       </div>
     </section>
 
@@ -572,72 +584,13 @@
       </div>
     </section>
 
-    <!-- Card 9: concept form -->
-    <section class="card card-concept" id="concept">
+    <!-- Card 9: closing call to action -->
+    <section class="card card-concept card-close">
       <div class="concept-weave" aria-hidden="true"></div>
-      <div class="concept-grid">
-        <div class="concept-copy">
-          <h2>Get a free redesign concept of your homepage</h2>
-          <p>Send us your current website. Within 24 hours we'll send you a preview of your redesigned homepage and a fixed price.</p>
-          <ul class="concept-list">
-            <li>No cost and no obligation</li>
-            <li>No payment until you approve the finished site</li>
-            <li>A real person replies, not a sales sequence</li>
-          </ul>
-          <p class="concept-alt">Prefer email? Write to <a href="mailto:hello@kromaloom.com">hello@kromaloom.com</a>.</p>
-        </div>
-        <form class="concept-form" id="concept-form" action="api/concept" method="post" novalidate>
-          <div class="field">
-            <label for="f-site">Your current website</label>
-            <input id="f-site" name="website" type="text" inputmode="url" placeholder="yourbusiness.com">
-          </div>
-          <div class="field-row">
-            <div class="field">
-              <label for="f-name">Your name</label>
-              <input id="f-name" name="name" type="text" autocomplete="name" required>
-            </div>
-            <div class="field">
-              <label for="f-business">Business name</label>
-              <input id="f-business" name="business" type="text" autocomplete="organization" required>
-            </div>
-          </div>
-          <div class="field">
-            <label for="f-email">Email</label>
-            <input id="f-email" name="email" type="email" autocomplete="email" required>
-          </div>
-          <div class="field-row">
-            <div class="field">
-              <label for="f-country">Country</label>
-              <select id="f-country" name="country" required>
-                <option value="Canada">Canada</option>
-                <option value="United States">United States</option>
-                <option value="United Kingdom">United Kingdom</option>
-                <option value="United Arab Emirates">United Arab Emirates</option>
-                <option value="Other">Somewhere else</option>
-              </select>
-            </div>
-            <div class="field">
-              <label for="f-plan">Package</label>
-              <select id="f-plan" name="plan">
-                <option value="Redesign">Redesign</option>
-                <option value="Redesign Plus">Redesign Plus</option>
-                <option value="Store redesign">Store redesign</option>
-                <option value="Not sure yet">Not sure yet</option>
-              </select>
-            </div>
-          </div>
-          <div class="field">
-            <label for="f-notes">What bothers you most about your current site? <span class="optional">(optional)</span></label>
-            <textarea id="f-notes" name="notes" rows="3"></textarea>
-          </div>
-          <div class="hp" aria-hidden="true">
-            <label for="f-company">Leave this empty</label>
-            <input id="f-company" name="company" type="text" tabindex="-1" autocomplete="off">
-          </div>
-          <button class="btn btn-block" type="submit">Request my free concept</button>
-          <p class="form-status" id="form-status" role="status" aria-live="polite"></p>
-          <p class="form-legal">We'll only use your details to send your concept and reply to you. See our <a href="privacy.html">privacy policy</a>.</p>
-        </form>
+      <div class="close-inner">
+        <h2>See your redesign before you pay a cent</h2>
+        <p>Free concept in 24 hours. Live in 48. Pay only when you love it.</p>
+        <a class="btn btn-onlight" href="#concept" data-focus="f-site">Get my free concept</a>
       </div>
     </section>
   </main>
