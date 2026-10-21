@@ -21,6 +21,11 @@ The agency's own website. It's a fast static site with no build step, ready for 
 
 SEO already included: unique titles and descriptions, canonical URLs, Open Graph image, structured data (ProfessionalService, WebSite, FAQPage), sitemap, robots.txt, semantic headings, and no render-blocking third-party requests.
 
+## Preview on GitHub Pages
+
+All paths are relative, so the site also runs from GitHub Pages at
+`https://abdullah-coder-007.github.io/web-designing/`. To switch it on: repo **Settings → Pages → Build and deployment**, source **Deploy from a branch**, branch **main**, folder **/ (root)**. The form can't send from GitHub Pages (it needs the Cloudflare function), so there it shows an "email us instead" link.
+
 ## Deploy on Cloudflare Pages
 
 1. In the Cloudflare dashboard, go to **Workers & Pages → Create → Pages → Connect to Git**.

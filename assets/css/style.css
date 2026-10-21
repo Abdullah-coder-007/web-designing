@@ -1,14 +1,14 @@
 /* Kromaloom: dyed-thread palette on lavender paper */
 @font-face {
   font-family: "Bricolage Grotesque";
-  src: url("/assets/fonts/bricolage-grotesque.woff") format("woff");
+  src: url("../fonts/bricolage-grotesque.woff") format("woff");
   font-weight: 200 800;
   font-style: normal;
   font-display: swap;
 }
 @font-face {
   font-family: "Instrument Sans";
-  src: url("/assets/fonts/instrument-sans.woff") format("woff");
+  src: url("../fonts/instrument-sans.woff") format("woff");
   font-weight: 400 700;
   font-style: normal;
   font-display: swap;
