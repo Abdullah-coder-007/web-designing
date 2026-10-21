@@ -156,6 +156,8 @@
   const runPageSpeed = async (url) => {
     const qs = new URLSearchParams({ url, strategy: 'mobile' });
     ['performance', 'seo', 'accessibility', 'best-practices'].forEach((c) => qs.append('category', c));
+    const key = (document.querySelector('meta[name="psi-key"]') || {}).content;
+    if (key) qs.set('key', key);
     const { res, data } = await fetchJson('https://www.googleapis.com/pagespeedonline/v5/runPagespeed?' + qs, {}, 70000);
     if (!res.ok || !data || !data.lighthouseResult) {
       const msg = data && data.error && data.error.message ? data.error.message : '';

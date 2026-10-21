@@ -45,6 +45,13 @@ The "Check my website free" box in the hero reports what's wrong with a visitor'
 - **On Cloudflare Pages:** `functions/api/analyze.js` fetches the visitor's homepage and checks its HTML (title, description, headings, mobile setup, HTTPS, alt text, tap-to-call, forms, structured data, page weight), then adds Google PageSpeed scores. Optional: add a free Google PageSpeed Insights API key as a secret named `PSI_KEY` for higher daily limits.
 - **On GitHub Pages (no functions):** the page calls Google PageSpeed Insights directly from the browser instead.
 
+**You need a free PageSpeed API key.** Without one, all sites share Google's tiny keyless allowance, which runs out most days.
+
+1. Go to console.cloud.google.com, create a project, and enable **PageSpeed Insights API**.
+2. **APIs & Services → Credentials → Create credentials → API key.**
+3. Edit the key: under **Application restrictions** choose **Websites** and add `abdullah-coder-007.github.io/*` and later `yourdomain.com/*`. Under **API restrictions** allow only PageSpeed Insights API.
+4. Paste the key into `<meta name="psi-key" content="">` in `index.html` (browser checks), and on Cloudflare also add it as the secret `PSI_KEY`.
+
 `functions/api/geo.js` returns the visitor's country from Cloudflare, which picks the trades list and pricing currency. Without it, the page guesses from the browser's time zone.
 
 ## Make the form deliver leads
