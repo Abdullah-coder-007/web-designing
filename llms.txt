@@ -1,16 +1,16 @@
 # Kromaloom
 
-> Website design studio for small businesses in Canada, the United States, the United Kingdom and the UAE. We redesign dated websites and build new ones: mobile-first, fast, with search basics built in. Every prospect gets a free concept of their new homepage before paying.
+> Website design studio for small businesses in Canada, the United States, the United Kingdom and the UAE. We redesign dated websites and build new ones: mobile-first, fast, with search basics built in. Every prospect gets a free concept of their new homepage within 24 hours, before paying anything.
 
 ## Services and founding prices
-- Website redesign: CA$299 / US$249 / £199 / AED 899, live in 7 days
-- New website (up to 5 pages, copy included): CA$499 / US$399 / £299 / AED 1,499, live in 10 days
-- Online store (Shopify or WooCommerce, up to 20 products): CA$999 / US$799 / £599 / AED 2,899, live in 14 to 21 days
+- Website redesign: CA$299 / US$249 / £199 / AED 899, live in 24 hours
+- New website (up to 5 pages, copy included): CA$499 / US$399 / £299 / AED 1,499, live in 48 hours
+- Online store (Shopify or WooCommerce, up to 20 products): CA$999 / US$799 / £599 / AED 2,899, live in 3 to 5 days
 - Care plans after launch from CA$29 per month
 - Second-language versions (Arabic, French) at +50% of the package
 
 ## Terms
-- 50% to start, 50% before launch
+- No upfront payment: built on a private preview link, paid after approval, then launched
 - Client owns domain, hosting and all files
 
 ## Contact
