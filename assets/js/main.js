@@ -173,20 +173,24 @@
     };
   };
 
-  /* Keyless check: Microlink runs Lighthouse, takes a screenshot and reads colours and technology */
-  const runMicrolink = async (url) => {
-    const qs = new URLSearchParams({ url, palette: 'true', screenshot: 'true', meta: 'true', 'insights.technologies': 'true', 'insights.lighthouse': 'true' });
-    const { res, data } = await fetchJson('https://api.microlink.io/?' + qs, {}, 75000);
+  /* Keyless checks via Microlink: one quick request (screenshot, colours, tech, title)
+     and one slower Lighthouse request, run side by side so a slow speed test can't sink the report. */
+  const microlink = async (params, ms) => {
+    const { res, data } = await fetchJson('https://api.microlink.io/?' + new URLSearchParams(params), {}, ms);
     if (!res.ok || !data || data.status !== 'success') {
-      const code = data && data.code;
-      if (res.status === 429 || code === 'ERATE') throw Object.assign(new Error('rate'), { soft: true });
-      if (/EFAILEDURL|EINVALURL|ENOTFOUND|EINVALURLCLIENT/.test(code || '')) throw new Error('We couldn\'t reach that website. Check the address and try again.');
-      throw Object.assign(new Error('microlink'), { soft: true });
+      const code = (data && data.code) || 'HTTP' + res.status;
+      if (window.console) console.warn('Website check: Microlink returned', code, data && data.message);
+      const err = new Error(code);
+      err.code = code;
+      err.rate = res.status === 429 || code === 'ERATE';
+      err.unreachable = /EFAILEDURL|EINVALURL|ENOTFOUND|EINVALURLCLIENT|EBADREQUEST/.test(code);
+      throw err;
     }
-    const d = data.data || {};
-    const lh = d.insights && d.insights.lighthouse;
+    return data.data || {};
+  };
+  const runMicrolinkQuick = async (url) => {
+    const d = await microlink({ url, palette: 'true', screenshot: 'true', meta: 'true', 'insights.technologies': 'true' }, 40000);
     return {
-      lighthouse: lh && lh.categories ? fromLighthouse(lh) : null,
       design: {
         screenshot: d.screenshot && d.screenshot.url,
         palette: (d.screenshot && d.screenshot.palette) || (d.image && d.image.palette) || (d.logo && d.logo.palette) || [],
@@ -195,8 +199,35 @@
         tech: ((d.insights && d.insights.technologies) || []).map((t) => t.name),
         title: d.title || '',
         description: d.description || ''
-      }
+      },
+      finalUrl: d.url || url,
+      lang: d.lang || null
     };
+  };
+  const runMicrolinkLighthouse = async (url) => {
+    const d = await microlink({ url, meta: 'false', 'insights.lighthouse': 'true' }, 75000);
+    const lh = d.insights && d.insights.lighthouse;
+    if (!lh || !lh.categories) throw Object.assign(new Error('NOLIGHTHOUSE'), { code: 'NOLIGHTHOUSE' });
+    return fromLighthouse(lh);
+  };
+
+  /* Checks we can make from the quick request alone */
+  const quickChecks = (q) => {
+    const c = [];
+    const d = q.design;
+    const https = /^https:/i.test(q.finalUrl || '');
+    c.push({ id: 'https', ok: https, area: 'Security', title: 'Secure connection (HTTPS)', detail: https ? 'Your site loads over HTTPS.' : 'Your site loads without HTTPS, so Chrome shows "Not secure" next to your address.', fix: 'We switch the site to HTTPS with a free certificate and redirect every old address.' });
+    const t = (d.title || '').trim();
+    const tOk = t.length >= 15 && t.length <= 65;
+    c.push({ id: 'title', ok: tOk, area: 'Search', title: 'Page title', detail: !t ? 'There is no page title, which is the headline Google shows for your site.' : tOk ? `"${t.slice(0, 70)}"` : `Your title is ${t.length} characters ("${t.slice(0, 60)}${t.length > 60 ? '…' : ''}"). Aim for about 30 to 60, with your service and town.`, fix: 'We write a title with your main service and location, for example "Emergency Plumber in Calgary | Northside".' });
+    const ds = (d.description || '').trim();
+    const dOk = ds.length >= 50 && ds.length <= 170;
+    c.push({ id: 'description', ok: dOk, area: 'Search', title: 'Search description', detail: !ds ? 'There is no description, so Google picks random text from the page to show under your link.' : dOk ? 'Your page has a search description of a good length.' : `Your description is ${ds.length} characters. Aim for about 120 to 160.`, fix: 'We write a short description that makes people click your result instead of a competitor\'s.' });
+    c.push({ id: 'social', ok: d.hasShareImage, area: 'Search', title: 'Link preview image', detail: d.hasShareImage ? 'Links to your site show a preview image when shared.' : 'When someone shares your link on WhatsApp or Facebook, no preview image appears.', fix: 'We add a branded preview image and text for shared links.' });
+    c.push({ id: 'lang', ok: !!q.lang, area: 'Search', title: 'Page language set', detail: q.lang ? `Language: ${q.lang}.` : 'The page doesn\'t declare its language, which helps Google show it to the right searchers.', fix: 'We set the page language, and add Arabic or French versions if you need them.' });
+    const old = (d.tech || []).filter((x) => /jQuery$|Flash|Joomla|Drupal 7|Bootstrap 3|Weebly|Site123|GoDaddy Website Builder/i.test(x));
+    c.push({ id: 'tech', ok: old.length === 0, area: 'Speed', title: 'Up-to-date technology', detail: old.length ? `Uses ${old.join(', ')}, which is dated and often slow.` : 'No obviously dated technology detected.', fix: 'We rebuild on a modern, lightweight setup.' });
+    return c;
   };
 
   /* Last resort: Google PageSpeed (shared allowance unless a key is set) */
@@ -321,7 +352,7 @@
         designHtml = `<p class="summary-line">Built with: ${esc(r.platform)}. We can redesign it on the same platform or move it somewhere faster.</p>`;
       }
 
-      const source = r.source === 'full' ? 'Checked your homepage code directly, plus a Lighthouse test on a mobile connection.' : 'Based on a Lighthouse test run as a mobile visitor.';
+      const source = r.source === 'full' ? 'Checked your homepage code directly, plus a Lighthouse test on a mobile connection.' : r.source === 'quick' ? 'The speed test couldn\'t finish for this site, so this report covers search, sharing and design. We\'ll include full speed results in your free concept.' : 'Based on a Lighthouse test run as a mobile visitor.';
       body.innerHTML = `${scores}
         ${failing.length ? `<h3 class="design-title">What's holding it back</h3><div class="issues">${failing.map(issueCard).join('')}</div>` : ''}
         ${passing.length ? `<details class="passed"><summary>${passing.length} check${passing.length === 1 ? '' : 's'} passed</summary><div class="issues">${passing.map(issueCard).join('')}</div></details>` : ''}
@@ -370,36 +401,50 @@
       const button = checker.querySelector('button');
       button.disabled = true;
       try {
-        // Run the server check (Cloudflare only) and the keyless Microlink check side by side.
-        const serverP = fetchJson('api/analyze', {
-          method: 'POST', headers: { 'Content-Type': 'application/json', Accept: 'application/json' }, body: JSON.stringify({ url: u.href })
-        }, 60000).catch(() => null);
-        const microP = runMicrolink(u.href).catch((err) => err);
-        const [server, micro] = await Promise.all([serverP, microP]);
+        // Run the server check (Cloudflare only) and both Microlink checks side by side.
+        const settle = (pr) => pr.then((v) => ({ v }), (e) => ({ e }));
+        const [server, quick, lh] = await Promise.all([
+          settle(fetchJson('api/analyze', {
+            method: 'POST', headers: { 'Content-Type': 'application/json', Accept: 'application/json' }, body: JSON.stringify({ url: u.href })
+          }, 60000)),
+          settle(runMicrolinkQuick(u.href)),
+          settle(runMicrolinkLighthouse(u.href))
+        ]);
 
-        const serverOk = server && server.data && server.data.ok ? server.data : null;
-        if (!serverOk && server && server.data && server.data.error && server.res.status !== 404 && server.res.status !== 405) {
-          fail(server.data.error); return;
+        const sv = server.v;
+        const serverOk = sv && sv.data && sv.data.ok ? sv.data : null;
+        if (!serverOk && sv && sv.data && sv.data.error && sv.res.status !== 404 && sv.res.status !== 405) { fail(sv.data.error); return; }
+        const q = quick.v || null;
+        const L = lh.v || null;
+        if (!serverOk && !q && !L) {
+          const e = quick.e || lh.e || {};
+          if (e.unreachable) { fail('We couldn\'t reach that website. Check the address (for example yourbusiness.com) and try again.'); return; }
+          if (e.rate) { fail('You\'ve used today\'s free automatic checks from this connection. Send us your website below and we\'ll check it by hand, free.'); return; }
         }
-        const microOk = micro && !(micro instanceof Error) ? micro : null;
-        if (!serverOk && micro instanceof Error && !micro.soft) { fail(micro.message); return; }
 
-        let checks = null, scores = null, audits = null, source = 'lighthouse';
+        let checks = [], scores = null, audits = null, source = 'lighthouse';
         if (serverOk) {
           checks = serverOk.checks; source = 'full';
           if (serverOk.psi && serverOk.psi.scores) scores = serverOk.psi.scores;
         }
-        if (microOk && microOk.lighthouse) {
-          if (!checks) checks = microOk.lighthouse.checks;
-          if (!scores) scores = microOk.lighthouse.scores;
-          audits = microOk.lighthouse.audits;
+        if (L) {
+          if (!serverOk) {
+            // Lighthouse plus the quick checks Lighthouse doesn't cover
+            const covered = new Set(['https', 'title', 'description']);
+            checks = L.checks.concat(q ? quickChecks(q).filter((c) => !covered.has(c.id)) : []);
+          }
+          if (!scores) scores = L.scores;
+          audits = L.audits;
+        } else if (!serverOk && q) {
+          checks = quickChecks(q); source = 'quick';
         }
-        if (!checks) {
-          const psi = await runPageSpeed(u.href); // throws a friendly message if this fails too
-          checks = psi.checks; scores = psi.scores; audits = psi.audits;
+        if (!scores) {
+          try { const psi = await runPageSpeed(u.href); scores = psi.scores; if (!checks.length) checks = psi.checks; audits = audits || psi.audits; }
+          catch (e2) { /* scores are optional */ }
         }
+        if (!checks.length) { fail('Our automatic check couldn\'t load that page right now. Send us your website below and we\'ll check it by hand, free.'); return; }
         stopSteps();
-        render({ checks, scores, audits, source, design: microOk ? microOk.design : null, platform: serverOk ? serverOk.platform : null }, host);
+        render({ checks, scores, audits, source, design: q ? q.design : null, platform: serverOk ? serverOk.platform : null }, host);
       } catch (err) {
         fail(err && err.message ? err.message : 'Our automatic check couldn\'t finish. Send us your website below and we\'ll check it by hand, free.');
       } finally {
