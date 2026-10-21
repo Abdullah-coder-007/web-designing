@@ -36,6 +36,8 @@ All paths are relative, so the site also runs from GitHub Pages at
 
 Every push to `main` redeploys automatically.
 
+When you change `style.css` or `main.js`, bump the `?v=` number on their links in every HTML page, so browsers fetch the new files instead of a cached copy.
+
 ## Website checker
 
 The "Check my website free" box in the hero reports what's wrong with a visitor's site.
