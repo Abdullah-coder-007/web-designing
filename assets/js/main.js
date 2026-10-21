@@ -153,19 +153,8 @@
     } finally { clearTimeout(t); }
   };
 
-  const runPageSpeed = async (url) => {
-    const qs = new URLSearchParams({ url, strategy: 'mobile' });
-    ['performance', 'seo', 'accessibility', 'best-practices'].forEach((c) => qs.append('category', c));
-    const key = (document.querySelector('meta[name="psi-key"]') || {}).content;
-    if (key) qs.set('key', key);
-    const { res, data } = await fetchJson('https://www.googleapis.com/pagespeedonline/v5/runPagespeed?' + qs, {}, 70000);
-    if (!res.ok || !data || !data.lighthouseResult) {
-      const msg = data && data.error && data.error.message ? data.error.message : '';
-      throw new Error(/FAILED_DOCUMENT_REQUEST|ERRORED_DOCUMENT_REQUEST|DNS/i.test(msg)
-        ? 'We couldn\'t reach that website. Check the address and try again.'
-        : 'Google\'s speed test is busy right now. Try again in a minute, or send us your site below.');
-    }
-    const lr = data.lighthouseResult;
+  /* Turn a Lighthouse result (from Microlink or Google) into our checks and scores */
+  const fromLighthouse = (lr) => {
     const cats = lr.categories || {};
     const a = lr.audits || {};
     const score = (k) => (cats[k] && typeof cats[k].score === 'number' ? Math.round(cats[k].score * 100) : null);
@@ -178,12 +167,101 @@
       checks.push({ id, ok, title, area, fix, detail: ok ? `Passed${shown}.` : bad + shown });
     });
     return {
-      ok: true, source: 'pagespeed', url: lr.finalDisplayedUrl || lr.finalUrl || url, checks, platform: null,
-      psi: {
-        scores: { performance: score('performance'), seo: score('seo'), accessibility: score('accessibility'), bestPractices: score('best-practices') },
-        metrics: { lcp: a['largest-contentful-paint']?.displayValue || null }
+      checks,
+      scores: { performance: score('performance'), seo: score('seo'), accessibility: score('accessibility'), bestPractices: score('best-practices') },
+      audits: a
+    };
+  };
+
+  /* Keyless check: Microlink runs Lighthouse, takes a screenshot and reads colours and technology */
+  const runMicrolink = async (url) => {
+    const qs = new URLSearchParams({ url, palette: 'true', screenshot: 'true', meta: 'true', 'insights.technologies': 'true', 'insights.lighthouse': 'true' });
+    const { res, data } = await fetchJson('https://api.microlink.io/?' + qs, {}, 75000);
+    if (!res.ok || !data || data.status !== 'success') {
+      const code = data && data.code;
+      if (res.status === 429 || code === 'ERATE') throw Object.assign(new Error('rate'), { soft: true });
+      if (/EFAILEDURL|EINVALURL|ENOTFOUND|EINVALURLCLIENT/.test(code || '')) throw new Error('We couldn\'t reach that website. Check the address and try again.');
+      throw Object.assign(new Error('microlink'), { soft: true });
+    }
+    const d = data.data || {};
+    const lh = d.insights && d.insights.lighthouse;
+    return {
+      lighthouse: lh && lh.categories ? fromLighthouse(lh) : null,
+      design: {
+        screenshot: d.screenshot && d.screenshot.url,
+        palette: (d.screenshot && d.screenshot.palette) || (d.image && d.image.palette) || (d.logo && d.logo.palette) || [],
+        hasShareImage: !!(d.image && d.image.url),
+        hasLogo: !!(d.logo && d.logo.url),
+        tech: ((d.insights && d.insights.technologies) || []).map((t) => t.name),
+        title: d.title || '',
+        description: d.description || ''
       }
     };
+  };
+
+  /* Last resort: Google PageSpeed (shared allowance unless a key is set) */
+  const runPageSpeed = async (url) => {
+    const qs = new URLSearchParams({ url, strategy: 'mobile' });
+    ['performance', 'seo', 'accessibility', 'best-practices'].forEach((c) => qs.append('category', c));
+    const key = (document.querySelector('meta[name="psi-key"]') || {}).content;
+    if (key) qs.set('key', key);
+    const { res, data } = await fetchJson('https://www.googleapis.com/pagespeedonline/v5/runPagespeed?' + qs, {}, 70000);
+    if (!res.ok || !data || !data.lighthouseResult) {
+      const msg = data && data.error && data.error.message ? data.error.message : '';
+      throw new Error(/FAILED_DOCUMENT_REQUEST|ERRORED_DOCUMENT_REQUEST|DNS/i.test(msg)
+        ? 'We couldn\'t reach that website. Check the address and try again.'
+        : 'Our automatic check is at its limit for today. Send us your website below and we\'ll check it by hand, free.');
+    }
+    return fromLighthouse(data.lighthouseResult);
+  };
+
+  /* ---------- Colour helpers for the design suggestions ---------- */
+  const hexToHsl = (hex) => {
+    const m = /^#?([0-9a-f]{6})$/i.exec(hex || '');
+    if (!m) return null;
+    const n = parseInt(m[1], 16);
+    let r = (n >> 16) / 255, g = ((n >> 8) & 255) / 255, b = (n & 255) / 255;
+    const max = Math.max(r, g, b), min = Math.min(r, g, b);
+    let h = 0, s = 0; const l = (max + min) / 2;
+    if (max !== min) {
+      const d = max - min;
+      s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+      h = max === r ? (g - b) / d + (g < b ? 6 : 0) : max === g ? (b - r) / d + 2 : (r - g) / d + 4;
+      h *= 60;
+    }
+    return { h, s: s * 100, l: l * 100 };
+  };
+  const hsl = (h, s, l) => `hsl(${Math.round((h + 360) % 360)} ${Math.round(s)}% ${Math.round(l)}%)`;
+
+  const designPlan = (design, lhAudits, checks) => {
+    const palette = [...new Set((design.palette || []).map((c) => c.toUpperCase()))].slice(0, 6);
+    const hsls = palette.map(hexToHsl).filter(Boolean);
+    const vivid = hsls.filter((c) => c.s > 25 && c.l > 15 && c.l < 85).sort((a, b) => b.s - a.s);
+    const base = vivid[0] || { h: 252, s: 70, l: 50 };
+    const avgSat = hsls.length ? hsls.reduce((n, c) => n + c.s, 0) / hsls.length : 0;
+    const refined = [
+      { name: 'Brand', c: hsl(base.h, Math.max(62, Math.min(base.s, 82)), 48) },
+      { name: 'Deep', c: hsl(base.h, 45, 14) },
+      { name: 'Soft', c: hsl(base.h, 55, 96) },
+      { name: 'Accent', c: hsl(base.h + 150, 85, 56) },
+      { name: 'Highlight', c: hsl(base.h + 40, 95, 60) }
+    ];
+    const tips = [];
+    const failed = (id) => checks.some((c) => c.id === id && !c.ok);
+    if (hsls.length && avgSat < 18) tips.push(['A confident brand colour', 'Your current colours are mostly greys and muted tones, so nothing draws the eye to your call button. We build the page around one strong brand colour.']);
+    else if (vivid.length >= 4) tips.push(['Fewer, stronger colours', 'Several bright colours compete for attention. We narrow it to one brand colour and one accent, so the important buttons stand out.']);
+    else tips.push(['Sharper version of your colours', 'We keep your colours recognisable but make them cleaner and higher contrast, as in the refined palette above.']);
+    tips.push(['A first screen that sells', 'One headline that says what you do and where, a big call or booking button, and your star rating, all visible without scrolling.']);
+    tips.push(['Modern type', 'A characterful heading font paired with a clean, readable body font, sized properly for phones.']);
+    if (failed('largest-contentful-paint') || failed('modern-image-formats') || failed('weight')) tips.push(['Lighter, faster visuals', 'Compressed images in modern formats and fewer heavy scripts, so the first screen appears in under 2.5 seconds.']);
+    if (failed('color-contrast')) tips.push(['Text you can actually read', 'Some text blends into its background today. We set colours that pass accessibility contrast rules.']);
+    tips.push(['Proof up front', 'Reviews, real photos of your work and trust badges moved high up the page, where people decide.']);
+    tips.push(['A sticky call bar on phones', 'A "Call now" or "Book" button that stays at the bottom of the screen as people scroll.']);
+    if (!design.hasShareImage) tips.push(['A branded link preview', 'When your link is shared on WhatsApp or Facebook, a proper image and title appear instead of a blank box.']);
+    if (!design.hasLogo) tips.push(['A crisp logo', 'We redraw your logo as a sharp vector so it looks clean on every screen.']);
+    tips.push(['One 3D accent', 'A single animated 3D element in the hero to make the site feel modern, without slowing it down.']);
+    const old = (design.tech || []).filter((t) => /jQuery|Flash|Joomla|Drupal 7|Bootstrap 3|Wix|GoDaddy|Weebly|Site123/i.test(t));
+    return { palette, refined, tips: tips.slice(0, 8), tech: design.tech || [], old };
   };
 
   const checker = $('checker');
@@ -195,7 +273,6 @@
     const progress = $('report-progress');
     const steps = [...report.querySelectorAll('.report-steps li')];
     let stepTimer = 0;
-    let lastReport = null;
 
     const setStep = (i) => steps.forEach((li, n) => {
       li.classList.toggle('is-done', n < i);
@@ -214,26 +291,43 @@
       return `<div class="score"><span class="dial" style="--v:${v};--c:${c}"><b>${v}</b></span><span>${esc(label)}<small>${esc(hint)}</small></span></div>`;
     };
     const issueCard = (c) => `<article class="issue${c.ok ? ' ok' : ''}"><h4>${esc(c.title)}<em>${esc(c.area)}</em></h4><p>${esc(c.detail)}</p>${c.ok ? '' : `<p class="fix">${esc(c.fix)}</p>`}</article>`;
+    const swatch = (c, label) => `<span class="sw"><i style="background:${esc(c)}"></i>${label ? `<small>${esc(label)}</small>` : ''}</span>`;
 
     const render = (r, host) => {
-      lastReport = r;
       progress.hidden = true;
       const failing = r.checks.filter((c) => !c.ok);
       const passing = r.checks.filter((c) => c.ok);
       title.textContent = failing.length
         ? `We found ${failing.length} thing${failing.length === 1 ? '' : 's'} holding ${host} back`
-        : `${host} is in good shape`;
+        : `${host} is in good shape technically`;
       sub.textContent = failing.length
-        ? 'Each one costs you customers, Google rankings, or both. Here is what we found and how we\'d fix it.'
-        : 'The basics are covered. A redesign can still make it look sharper and turn more visitors into calls.';
-      const s = r.psi && r.psi.scores;
-      const scores = s ? `<div class="scores">${dial('Speed on phones', 'Google PageSpeed', s.performance)}${dial('Google search basics', 'SEO score', s.seo)}${dial('Easy to use', 'Accessibility', s.accessibility)}${dial('Built properly', 'Best practices', s.bestPractices)}</div>` : '';
-      const platform = r.platform ? `<p class="summary-line">Built with: ${esc(r.platform)}. We can redesign it on the same platform or move it somewhere faster.</p>` : '';
-      body.innerHTML = `${scores}${platform}
-        ${failing.length ? `<div class="issues">${failing.map(issueCard).join('')}</div>` : ''}
+        ? 'Each one costs you customers, Google rankings, or both. Below: what we found, how we\'d fix it, and how we\'d make it look better.'
+        : 'The basics are covered. Below is how we\'d make it look sharper and turn more visitors into calls.';
+      const s = r.scores;
+      const scores = s ? `<div class="scores">${dial('Speed on phones', 'Lighthouse performance', s.performance)}${dial('Google search basics', 'SEO score', s.seo)}${dial('Easy to use', 'Accessibility', s.accessibility)}${dial('Built properly', 'Best practices', s.bestPractices)}</div>` : '';
+
+      let designHtml = '';
+      if (r.design) {
+        const plan = designPlan(r.design, r.audits || {}, r.checks);
+        const shot = r.design.screenshot ? `<figure class="shot-now"><div class="device-bar" aria-hidden="true"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="url">${esc(host)}</span></div><img src="${esc(r.design.screenshot)}" alt="Screenshot of ${esc(host)} today" loading="lazy"><figcaption>Your site today</figcaption></figure>` : '';
+        const pal = plan.palette.length ? `<div class="palettes"><div><p class="pal-label">Your colours now</p><div class="sws">${plan.palette.map((c) => swatch(c)).join('')}</div></div><div><p class="pal-label">A refined palette we'd start from</p><div class="sws">${plan.refined.map((x) => swatch(x.c, x.name)).join('')}</div></div></div>` : '';
+        const tech = plan.tech.length ? `<p class="summary-line">Built with ${esc(plan.tech.slice(0, 5).join(', '))}.${plan.old.length ? ` ${esc(plan.old.join(', '))} ${plan.old.length === 1 ? 'is' : 'are'} dated and often slow; we can modernise or replace ${plan.old.length === 1 ? 'it' : 'them'}.` : ' We can redesign on the same platform or move it somewhere faster.'}</p>` : '';
+        designHtml = `<section class="design-plan" aria-label="Design upgrades">
+          <h3 class="design-title">How we'd make it look better</h3>
+          <div class="design-grid">${shot}<div class="design-side">${pal}<ol class="tips">${plan.tips.map(([t, d]) => `<li><b>${esc(t)}.</b> ${esc(d)}</li>`).join('')}</ol></div></div>
+          ${tech}
+        </section>`;
+      } else if (r.platform) {
+        designHtml = `<p class="summary-line">Built with: ${esc(r.platform)}. We can redesign it on the same platform or move it somewhere faster.</p>`;
+      }
+
+      const source = r.source === 'full' ? 'Checked your homepage code directly, plus a Lighthouse test on a mobile connection.' : 'Based on a Lighthouse test run as a mobile visitor.';
+      body.innerHTML = `${scores}
+        ${failing.length ? `<h3 class="design-title">What's holding it back</h3><div class="issues">${failing.map(issueCard).join('')}</div>` : ''}
         ${passing.length ? `<details class="passed"><summary>${passing.length} check${passing.length === 1 ? '' : 's'} passed</summary><div class="issues">${passing.map(issueCard).join('')}</div></details>` : ''}
-        <div class="report-cta"><p>${failing.length ? 'Want all of this fixed? We\'ll send you a free redesign concept of your homepage within 24 hours.' : 'Want a sharper look anyway? Get a free redesign concept within 24 hours.'}</p><button class="btn btn-onlight" type="button" id="report-to-form">Get my free redesign concept</button></div>
-        <p class="report-note">${r.source === 'full' ? 'Checked your homepage code directly, plus Google PageSpeed on a mobile connection.' : 'Based on Google PageSpeed Insights, tested as a mobile visitor.'} Results can vary between runs.</p>`;
+        ${designHtml}
+        <div class="report-cta"><p>${failing.length ? 'Want all of this fixed? We\'ll send you a free redesign concept of your homepage within 24 hours.' : 'Want to see the new look? Get a free redesign concept within 24 hours.'}</p><button class="btn btn-onlight" type="button" id="report-to-form">Get my free redesign concept</button></div>
+        <p class="report-note">${source} Results can vary between runs.</p>`;
       $('report-to-form').addEventListener('click', () => {
         const notes = $('f-notes');
         if (notes) notes.value = failing.length ? 'Website check found: ' + failing.map((c) => c.title).join('; ') : 'Website check: all basics passed.';
@@ -245,9 +339,9 @@
     const fail = (msg) => {
       stopSteps();
       progress.hidden = true;
-      title.textContent = 'We couldn\'t finish the check';
+      title.textContent = 'We\'ll check this one by hand';
       sub.textContent = '';
-      body.innerHTML = `<p class="report-error">${esc(msg)}</p><div class="report-cta"><p>We can still look at it by hand. Send it to us and you'll get a free redesign concept within 24 hours.</p><button class="btn btn-onlight" type="button" id="report-to-form">Send my website</button></div>`;
+      body.innerHTML = `<p class="report-error">${esc(msg)}</p><div class="report-cta"><p>Send it to us and you'll get a full check plus a free redesign concept within 24 hours.</p><button class="btn btn-onlight" type="button" id="report-to-form">Send my website</button></div>`;
       $('report-to-form').addEventListener('click', () => { scrollTo($('concept')); setTimeout(() => { const n = $('f-name'); if (n) n.focus({ preventScroll: true }); }, 650); });
     };
 
@@ -263,9 +357,9 @@
         return;
       }
       input.removeAttribute('aria-invalid');
-      const site = $('f-site');
-      if (site) site.value = u.hostname.replace(/^www\./, '');
       const host = u.hostname.replace(/^www\./, '');
+      const site = $('f-site');
+      if (site) site.value = host;
       report.hidden = false;
       progress.hidden = false;
       body.innerHTML = '';
@@ -276,19 +370,38 @@
       const button = checker.querySelector('button');
       button.disabled = true;
       try {
-        let result = null;
-        try {
-          const { res, data } = await fetchJson('api/analyze', {
-            method: 'POST', headers: { 'Content-Type': 'application/json', Accept: 'application/json' }, body: JSON.stringify({ url: u.href })
-          }, 60000);
-          if (data && data.ok) result = data;
-          else if (data && data.error && res.status !== 404 && res.status !== 405) { fail(data.error); return; }
-        } catch (err) { /* function not available here: fall back to PageSpeed */ }
-        if (!result) result = await runPageSpeed(u.href);
+        // Run the server check (Cloudflare only) and the keyless Microlink check side by side.
+        const serverP = fetchJson('api/analyze', {
+          method: 'POST', headers: { 'Content-Type': 'application/json', Accept: 'application/json' }, body: JSON.stringify({ url: u.href })
+        }, 60000).catch(() => null);
+        const microP = runMicrolink(u.href).catch((err) => err);
+        const [server, micro] = await Promise.all([serverP, microP]);
+
+        const serverOk = server && server.data && server.data.ok ? server.data : null;
+        if (!serverOk && server && server.data && server.data.error && server.res.status !== 404 && server.res.status !== 405) {
+          fail(server.data.error); return;
+        }
+        const microOk = micro && !(micro instanceof Error) ? micro : null;
+        if (!serverOk && micro instanceof Error && !micro.soft) { fail(micro.message); return; }
+
+        let checks = null, scores = null, audits = null, source = 'lighthouse';
+        if (serverOk) {
+          checks = serverOk.checks; source = 'full';
+          if (serverOk.psi && serverOk.psi.scores) scores = serverOk.psi.scores;
+        }
+        if (microOk && microOk.lighthouse) {
+          if (!checks) checks = microOk.lighthouse.checks;
+          if (!scores) scores = microOk.lighthouse.scores;
+          audits = microOk.lighthouse.audits;
+        }
+        if (!checks) {
+          const psi = await runPageSpeed(u.href); // throws a friendly message if this fails too
+          checks = psi.checks; scores = psi.scores; audits = psi.audits;
+        }
         stopSteps();
-        render(result, host);
+        render({ checks, scores, audits, source, design: microOk ? microOk.design : null, platform: serverOk ? serverOk.platform : null }, host);
       } catch (err) {
-        fail(err && err.message ? err.message : 'Something went wrong. Please try again.');
+        fail(err && err.message ? err.message : 'Our automatic check couldn\'t finish. Send us your website below and we\'ll check it by hand, free.');
       } finally {
         button.disabled = false;
       }
